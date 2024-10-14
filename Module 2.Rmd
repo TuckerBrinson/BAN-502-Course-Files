@@ -1,0 +1,44 @@
+```{r}
+library(tidyverse)
+library(GGally) #ggcorr and ggpairs
+library(ggcorrplot) #correlation plot alternative
+library(gridExtra) #create grids of plots
+library(tidymodels)
+```
+```{r}
+library(readr)
+CreditData <- read_csv("BAN 502/CreditData.csv", 
+    col_types = cols(AnnualIncome = col_number(), 
+        HouseholdSize = col_number(), YrsEdAfterHS = col_number(), 
+        HrWkTV = col_number(), AnnualCharges = col_number()))
+```
+
+```{r}
+credit = read_csv("CreditData.csv")
+```
+```{r}
+str(credit)
+summary(credit)
+```
+```{r}
+ggpairs(credit)
+```
+```{r}
+p1 = ggplot(credit, aes(x=AnnualIncome,y=AnnualCharges)) + geom_point(alpha=0.1) #changing alpha is helpful when many points may overlap
+p2 = ggplot(credit, aes(x=HouseholdSize,y=AnnualCharges)) + geom_point(alpha=0.1)
+p3 = ggplot(credit, aes(x=YrsEdAfterHS,y=AnnualCharges)) + geom_point(alpha=0.1)
+p4 = ggplot(credit, aes(x=HrWkTV,y=AnnualCharges)) + geom_point(alpha=0.1)
+grid.arrange(p1,p2,p3,p4,ncol=2)
+```
+```{r}
+mod1 = lm(AnnualCharges ~ AnnualIncome, credit) #create linear regression model
+summary(mod1) #examine the model
+```
+```{r}
+ggplot(credit,aes(x=AnnualIncome,y=AnnualCharges)) + geom_point(alpha=0.1) + geom_smooth(method = "lm", color = "red") + theme_bw()
+```
+
+```{r}
+library(tidymodels)
+```
+

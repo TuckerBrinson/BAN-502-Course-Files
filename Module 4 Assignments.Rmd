@@ -1,0 +1,44 @@
+```{r}
+library(tidyverse)
+library(mice)
+library(VIM)
+```
+
+```{r}
+grades = read.csv("class-grades.csv")
+```
+
+```{r}
+str(grades)
+summary(grades)
+skim(grades)
+```
+
+```{r}
+gg_miss_upset(grades, nsets = 4)
+```
+```{r}
+grades_rowdel = grades %>% drop_na() 
+#alternatively can specify which variable(s) on which to do the drop_na
+#drop_na(Age)
+skim(grades_rowdel)
+```
+
+```{r}
+grades_coldel = grades %>% select(-Tutorial, -Midterm, -TakeHome, -Final) 
+vim_plot = aggr(grades_coldel, numbers = TRUE, prop = c(TRUE, FALSE),cex.axis=.7)
+skim(grades_coldel)
+```
+```{r}
+set.seed(123) #sets seed for random number generator
+imp_grades = mice(grades, m=5, method='pmm', printFlag=FALSE)
+#m is the number of imputations, 5 is a reasonable value as a default
+#pmm is "predictive mean matching" = imputation method for numeric data
+#printFlag reduces amount of output
+summary(imp_grades)
+```
+```{r}
+grades_complete = complete(imp_grades) 
+summary(grades_complete)
+```
+
